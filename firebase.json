@@ -1,0 +1,12 @@
+{
+  "hosting": {
+    "public": "build",
+    "rewrites": [
+      {
+        "source": "/daily{,/**}",
+        "destination": "/daily.html"
+      }
+    ],
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+  }
+}
