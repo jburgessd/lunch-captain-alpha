@@ -56,6 +56,7 @@ class App extends React.Component<any, AppState> {
         </div>
       );
     } else {
+      // Make an error page eventually
       return null;
     }
   }
