@@ -9,14 +9,8 @@ import {
 import firebase from "firebase";
 import React from "react";
 
-interface LoginState {
-  email: string;
-  password: string;
-  error: string | null;
-}
-
-class Login extends React.Component<any, LoginState> {
-  constructor(props: any) {
+class Login extends React.Component {
+  constructor(props) {
     super(props);
     this.state = { email: "", password: "", error: null };
   }
@@ -51,17 +45,17 @@ class Login extends React.Component<any, LoginState> {
     this.props.changePage("signUp");
   };
 
-  onEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  onEmailChange = event => {
     const { value } = event.target;
     this.setState({ email: value });
   };
 
-  onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  onPasswordChange = event => {
     const { value } = event.target;
     this.setState({ password: value });
   };
 
-  onPasswordKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  onPasswordKeyDown = event => {
     if (event.key === "Enter") {
       this.onSubmitClick();
     }

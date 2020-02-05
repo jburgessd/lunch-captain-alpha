@@ -17,34 +17,8 @@ import { ArrowDropDown } from "@material-ui/icons";
 import firebase from "firebase";
 import React from "react";
 
-interface User {
-  email: string;
-  firstName: string;
-  lastName: string;
-}
-
-interface Groups {
-  Name: string;
-}
-
-interface NewUserState {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  error: string | null;
-  validPassword: boolean;
-  u_db: firebase.database.Reference;
-  g_db: firebase.database.Reference;
-  db: Array<User>;
-  groups: Array<string>;
-  group_sel: string;
-  buttonEl: React.RefObject<HTMLDivElement>;
-  popout_open: boolean;
-}
-
-class NewUser extends React.Component<any, NewUserState> {
-  constructor(props: any) {
+class NewUser extends React.Component {
+  constructor(props) {
     super(props);
     let users = firebase.database().ref("Users/");
     let groups = firebase.database().ref("Groups/");
@@ -61,7 +35,7 @@ class NewUser extends React.Component<any, NewUserState> {
       db: [],
       groups: [],
       group_sel: "",
-      buttonEl: React.useRef<HTMLDivElement>(null),
+      buttonEl: null,
       popout_open: false
     };
   }
@@ -71,8 +45,8 @@ class NewUser extends React.Component<any, NewUserState> {
       this.setState({ db: snapshot.val() });
     });
     this.state.g_db.once("value", snapshot => {
-      let tmp: string[] = ["No Group"];
-      snapshot.val().forEach((index: Groups) => {
+      let tmp = ["No Group"];
+      snapshot.val().forEach(index => {
         tmp.push(index.Name);
       });
       tmp.push("New Group");
@@ -80,22 +54,22 @@ class NewUser extends React.Component<any, NewUserState> {
     });
   }
 
-  onFirstNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  onFirstNameChange = event => {
     const { value } = event.target;
     this.setState({ firstName: value });
   };
 
-  onLastNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  onLastNameChange = event => {
     const { value } = event.target;
     this.setState({ lastName: value });
   };
 
-  onEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  onEmailChange = event => {
     const { value } = event.target;
     this.setState({ email: value });
   };
 
-  onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  onPasswordChange = event => {
     const { value } = event.target;
     this.setState({ password: value });
     var check = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,30}$/;
@@ -106,7 +80,7 @@ class NewUser extends React.Component<any, NewUserState> {
     }
   };
 
-  onPasswordKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  onPasswordKeyDown = event => {
     if (event.key === "Enter") {
       this.onSubmitClick();
     }
@@ -156,10 +130,7 @@ class NewUser extends React.Component<any, NewUserState> {
     }
   };
 
-  handleMenuItemClick = (
-    event: React.MouseEvent<HTMLLIElement, MouseEvent>,
-    index: number
-  ) => {
+  handleMenuItemClick = (event, index) => {
     this.setState({ group_sel: this.state.groups[index], popout_open: false });
   };
 
@@ -167,7 +138,7 @@ class NewUser extends React.Component<any, NewUserState> {
     this.setState({ popout_open: !this.state.popout_open });
   };
 
-  handleClose = (event: React.MouseEvent<Document, MouseEvent>) => {
+  handleClose = event => {
     this.setState({ popout_open: false });
   };
 
@@ -244,7 +215,6 @@ class NewUser extends React.Component<any, NewUserState> {
                   </ButtonGroup>
                   <Popper
                     open={this.state.popout_open}
-                    anchorEl={this.state.buttonEl.current}
                     role={undefined}
                     transition
                     disablePortal

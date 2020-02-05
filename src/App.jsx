@@ -5,28 +5,23 @@ import Header from "./Header";
 import Login from "./LandingPage/Login";
 import NewUser from "./LandingPage/NewUser";
 
-interface AppState {
-  currentPage: string | null;
-  user: firebase.User | null;
-  username: string | null;
-}
-
-class App extends React.Component<any, AppState> {
-  constructor(props: any) {
+class App extends React.Component {
+  constructor(props) {
     super(props);
+
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.setState({
           currentPage: "addRestaurant",
-          user,
-          username: user.displayName
+          user
         });
       }
     });
-    this.state = { currentPage: "login", user: null, username: null };
+
+    this.state = { currentPage: "login", user: null };
   }
 
-  changePage = (page: string) => {
+  changePage = page => {
     this.setState({ currentPage: page });
   };
 

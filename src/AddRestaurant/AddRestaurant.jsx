@@ -17,25 +17,36 @@ import LocationOnIcon from "@material-ui/icons/LocationOn";
 import firebase from "firebase";
 import React from "react";
 
-interface Restaurant {
-  address: string;
-  menu: string;
-  name: string;
-}
-
-interface AddRestaurantState {
-  r_db: firebase.database.Reference;
-  address: string;
-  menu: string;
-  name: string;
-  expanded: boolean;
-  db: Array<Restaurant>;
-  error: string | null;
-}
-
-class AddRestaurant extends React.Component<any, AddRestaurantState> {
-  constructor(props: any) {
+class AddRestaurant extends React.Component {
+  constructor(props) {
     super(props);
+
+    let users = firebase.database().ref("Users/");
+    users.once("value", snap => {
+      snap.val().forEach(element => {
+        if (element.email === this.props.user.email) {
+          let groups = firebase.database().ref("Groups/");
+          groups.once("value", arr => {
+            arr.val().forEach((el, index) => {
+              if (el.Name === element.groups) {
+                let groupNum = index;
+                let r = firebase
+                  .database()
+                  .ref("Groups/" + groupNum + "/Restaurants/");
+                this.setState({
+                  r_db: r,
+                  groupNum: index
+                });
+                r.once("value", s => {
+                  this.setState({ db: s.val() });
+                });
+              }
+            });
+          });
+        }
+      });
+    });
+
     let restaurants = firebase.database().ref("Restaurants/");
 
     this.state = {
@@ -47,10 +58,6 @@ class AddRestaurant extends React.Component<any, AddRestaurantState> {
       name: "",
       error: null
     };
-
-    restaurants.on("value", snapshot => {
-      this.setState({ db: snapshot.val() });
-    });
   }
 
   componentDidMount() {
@@ -59,22 +66,22 @@ class AddRestaurant extends React.Component<any, AddRestaurantState> {
     });
   }
 
-  onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  onNameChange = event => {
     const { value } = event.target;
     this.setState({ name: value });
   };
 
-  onAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  onAddressChange = event => {
     const { value } = event.target;
     this.setState({ address: value });
   };
 
-  onMenuChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  onMenuChange = event => {
     const { value } = event.target;
     this.setState({ menu: value });
   };
 
-  onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  onKeyDown = event => {
     if (event.key === "Enter") {
       this.onSubmitClick();
     }
@@ -109,7 +116,7 @@ class AddRestaurant extends React.Component<any, AddRestaurantState> {
       this.setState({ name: "", address: "", menu: "" });
       firebase
         .database()
-        .ref("Restaurants/" + db.length)
+        .ref("Groups/" + this.state.groupNum + "/Restaurants/" + db.length)
         .set({
           address: this.state.address,
           menu: this.state.menu,

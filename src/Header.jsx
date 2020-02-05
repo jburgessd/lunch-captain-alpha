@@ -2,10 +2,8 @@ import { AppBar, Button, Toolbar } from "@material-ui/core";
 import firebase from "firebase";
 import React from "react";
 
-interface HeaderState {}
-
-class Header extends React.Component<any, HeaderState> {
-  constructor(props: any) {
+class Header extends React.Component {
+  constructor(props) {
     super(props);
   }
 

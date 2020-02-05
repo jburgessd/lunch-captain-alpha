@@ -2,15 +2,11 @@ import * as firebase from "firebase/app";
 import React from "react";
 import Header from "../Header";
 import Login from "../LandingPage/Login";
+import NewUser from "../LandingPage/NewUser";
+import Select from "./Select";
 
-interface DailyAppState {
-  currentPage: string | null;
-  user: firebase.User | null;
-  username: string | null;
-}
-
-class DailyApp extends React.Component<any, DailyAppState> {
-  constructor(props: any) {
+class DailyApp extends React.Component {
+  constructor(props) {
     super(props);
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
@@ -24,11 +20,12 @@ class DailyApp extends React.Component<any, DailyAppState> {
     this.state = { currentPage: "login", user: null, username: null };
   }
 
-  changePage = (page: string) => {
+  changePage = page => {
     this.setState({ currentPage: page });
   };
 
   render() {
+    console.log(this.state.currentPage);
     if (this.state.currentPage === "login") {
       return (
         <div>
@@ -40,7 +37,14 @@ class DailyApp extends React.Component<any, DailyAppState> {
       return (
         <div>
           <Header user={this.state.user} changePage={this.changePage} />
-          <Login user={this.state.user} changePage={this.changePage} />
+          <Select user={this.state.user} changePage={this.changePage} />
+        </div>
+      );
+    } else if (this.state.currentPage === "signUp") {
+      return (
+        <div>
+          <Header user={this.state.user} changePage={this.changePage} />
+          <NewUser user={this.state.user} changePage={this.changePage} />
         </div>
       );
     }
